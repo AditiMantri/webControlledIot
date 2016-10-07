@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Controlled LED with LaaS</title>
+<!-- gigya.js script should only be included once -->
+<script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_H-BlEYCQx51jqcZ5Rh2wy4bey4t9CQD-VaLi_EQTHVvo-mOqCPSr3de8cR6JON-2">
+{
+	siteName: '99.xd09spz04.appspot.com (Web Controlled LED)'
+	,enabledProviders: 'facebook,googleplus'
+}
+</script>
+</head>
+<body>
+  
+  <div id="runningCodeExample" align="center">
+<p align="center">Please sign in using one of the following providers:</p>
+    <div id="loginDiv" align="center"></div>
+    <script type="text/javascript">
+        gigya.socialize.showLoginUI({containerID: "loginDiv", cid:'', width:220, height:60,
+                redirectURL: "/index1.html",
+                showTermsLink:false, hideGigyaLink:true // remove 'Terms' and 'Gigya' links
+                });
+    </script>
+</div>
+  
+</body>
+</html>

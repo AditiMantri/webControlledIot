@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Controlled LED Demo</title>
+ <!-- gigya.js script should only be included once -->
+<script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_H-BlEYCQx51jqcZ5Rh2wy4bey4t9CQD-VaLi_EQTHVvo-mOqCPSr3de8cR6JON-2">
+{
+	siteName: '99.xd09spz04.appspot.com (Web Controlled LED)'
+	,enabledProviders: 'facebook,googleplus'
+}
+</script>
+</head>
+<style type="text/css">
+	h4 {
+		margin: 0px;	
+	}
+	h3 {
+		margin-bottom: 0px;
+	}
+	.left {
+		float: left;
+	}
+	.right {
+		float: right;	
+	}
+   .center {
+      float: center;
+   }
+	.display_box {
+		border: black 1px solid;
+		width: 100%;
+	}
+</style>
+<body>
+ 
+  <h2 align="center"> Web Controlled LED Demo </h2> 
+	<form>
+		<!--<h3><u>Connection Info (There is no disconnect. Do not abuse!)</u></h3>
+		<label>MQTT Host</label>
+		<input type="text"	id="host">
+		<label>Port</label>
+		<input type="text"	id="port" placeholder="9001" value="9001">-->
+		<br/>
+		<center><input type="button" onclick="connect()" value="Connect to MQTT Eclipse Broker"></center>
+	</form>
+	
+  <table align="center">
+    
+  <tr>
+    <td>
+	<div align="center">
+		
+		<form>
+			<!--<label>Topic</label>
+			<input type="text"	id="pub_topic" placeholder="Enter a Topic">
+			<label>Message</label>
+			<input type="text"	id="pub_msg" placeholder="Enter a Message">
+			<br/>-->
+			<input type="button" onclick="publish(this)" value="on" id="btn">
+		
+			<input type="button" onclick="publish(this)" value="off" id="btn">
+		</form>
+	</div>
+    </td>
+   </tr>
+  </table>
+	<br/>
+	<br/>
+	<h3><u>Console Output</u></h3>
+	<div class="console">
+		<h4>Meta Data</h4>
+		<table class="display_box">
+			<thead>
+				<th>Timestamp</th>
+				<th>Data</th>
+			</thead>
+			<tbody id="meta_data">
+			</tbody>
+		</table>
+		<h4 align="left">Data</h4>
+		<table class="display_box">
+			<thead>
+				<th>Timestamp</th>
+				<th>Topic</th>
+				<th>Message</th>
+			</thead>
+			<tbody id="console_data">
+			</tbody>
+		</table>
+	</div>
+	<script type="text/javascript" src="mqttws.js"></script>
+	<script type="text/javascript">
+	var	client;
+	function connect () {
+		var host = "test.mosquitto.org"; //document.getElementById('host').value;
+		var port = 8080; //parseInt(document.getElementById('port').value);
+		var client_id = 'client_' + Math.random().toString(36).substr(2,11);
+		client = new Paho.MQTT.Client(host, port,'', client_id);
+		client.connect({
+			timeout: 30,
+			onSuccess: function () {
+				var now = new Date();
+				printMetaData('Connected to '+host+'. Client ID: '+client_id);
+            subscribe();
+				//document.getElementById('host').value = '';
+				//document.getElementById('port').value = '';
+			},
+			onFailure: function (responseObject) {
+				if (responseObject.errorCode !== 0) {
+					var now = new Date();
+					printMetaData(responseObject.errorMessage);
+				}
+			}
+		});
+		client.onMessageArrived = function (message) {
+			var now = new Date();
+			printConsoleData(message.destinationName, message.payloadString)
+		};
+     
+	}
+	function publish (obj) {
+		var topic = "sdmcetcse/light1"; //document.getElementById('pub_topic').value;
+		var payload = obj.value; //document.getElementById('btn').value;
+      alert(payload);
+		var message = new Paho.MQTT.Message(payload);
+		message.destinationName = topic;
+		client.send(message);
+		//document.getElementById('pub_topic').value = '';
+		//document.getElementById('pub_msg').value = '';
+	}
+	function subscribe () {
+		var sub_topic = "sdmcetcse/light1";// document.getElementById('sub_topic').value;
+		client.subscribe(sub_topic, {
+			onSuccess: function (successObj) {
+				console.log(successObj);
+				printMetaData('Subscribed to topic: '+sub_topic+' with QoS: '+successObj.grantedQos[0]);
+			},
+			onFailure: function (errorObj) {
+				printMetaData('Error in subscribing to : '+sub_topic+'. Code: '+errorObj.errorCode);
+			}
+		});
+		//document.getElementById('sub_topic').value = '';
+	}
+	function printMetaData (data) {
+		var now = new Date();
+		document.getElementById('meta_data').innerHTML += '<tr align="center"><td>'+now+'</td><td>'+data+'</td></tr>';
+	}
+	function printConsoleData (topic, payload) {
+		var now = new Date();
+		document.getElementById('console_data').innerHTML += '<tr align="center"><td>'+now+'</td><td>'+topic+'</td><td>'+payload+'</td></tr>';
+	}
+	</script>
+</body>
+</html>

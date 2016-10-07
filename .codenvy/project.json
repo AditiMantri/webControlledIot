@@ -1,0 +1,1 @@
+{"builders":{"configs":{},"default":"maven"},"mixinTypes":[],"runners":{"configs":{"recommend":{"ram":256,"variables":{},"options":{}}},"default":"system:/java/web/gae"},"type":"GAEJava","attributes":{"languageVersion":["1.6"],"language":["java"]},"description":"8.xd09spz04.appspot.com"}
